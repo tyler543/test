@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
- const app_name = 'pocketprofessors.com'; //change to your app name
+ const app_name = 'http://143.198.178.41/'; //change to your app name
  function buildPath(route:string) : string
 {
 if (process.env.NODE_ENV != 'development')
