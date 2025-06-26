@@ -159,6 +159,7 @@ app.post("/api/register", async(req, res) => {
       .json({ id: -1, firstName: "", lastName: "", error: "Server error" });
 
   }
+  console.log("BODY:", req.body);
 });
 
 // Search Cards
