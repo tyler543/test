@@ -114,6 +114,53 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
+//Register API
+//Incoming: login, password, firstName, lastName
+//Outgoing id, firstName, lastName, error 
+app.post("/api/register", async(req, res) => {
+  const{ login,password, firstName, lastName} = req.body;
+
+  try{
+    const db = client.db("pockProf");
+
+    const existingUser = await db
+      .collection("Users")
+      .findOne({Login: login});
+
+    let id = -1;
+    let fn = "";
+    let ln = "";
+    let error = "";
+
+    if(existingUser) {
+      error = "Username is already taken";
+    } else {
+      // Insert the new user
+      const newUser = {
+        Login: login,
+        Password: password,
+        FirstName: firstName,
+        LastName: lastName,
+      };
+
+      const result = await db.collection("Users").insertOne(newUser);
+
+      id = result.insertedId;
+      fn = firstName;
+      ln = lastName;
+    }
+    
+    const ret = { id, firstName: fn, lastName: ln, error };
+    res.status(200).json(ret);
+  } catch (err) {
+    console.error("Registration error:", err.message);
+    res
+      .status(500)
+      .json({ id: -1, firstName: "", lastName: "", error: "Server error" });
+
+  }
+});
+
 // Search Cards
 // Incoming: userId, search
 // Outgoing: results[], error
