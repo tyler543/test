@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 {
 if (process.env.NODE_ENV != 'development')
 {
-return 'http://' + app_name + route;
+return 'http://' + app_name + ':5000/'+  route;
 }
 else
 {
