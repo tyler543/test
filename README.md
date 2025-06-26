@@ -27,3 +27,4 @@ Pocket Professors is a full-stack web application that allows users to gamble fo
 - npm i --save-dev @types/node
 - npm install dotenv
 - npm install mongodb
+hi
