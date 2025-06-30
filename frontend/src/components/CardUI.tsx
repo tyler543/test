@@ -11,9 +11,6 @@ else
 return 'http://localhost:5000/' + route;
 }
 }
-import { buildPath } from './Path';
-const response = await fetch(buildPath('api/login'),
-{method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
 function CardUI()
 { 
     let _ud : any = localStorage.getItem('user_data');
