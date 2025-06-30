@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-
  const app_name = 'pocketprofessors.com'; //change to your app name
  function buildPath(route:string) : string
 {
@@ -35,9 +34,9 @@ var obj = {login:loginName,password:loginPassword};
 var js = JSON.stringify(obj);
 try
 {
+
 const response = await fetch(buildPath('api/login'),
-{method:'POST',body:js,headers:{'Content-Type':
-'application/json'}});
+{method:'POST',body:js,headers:{'Content-Type': 'application/json'}});
 var res = JSON.parse(await response.text());
 if( res.id <= 0 )
 {
