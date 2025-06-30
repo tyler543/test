@@ -27,6 +27,10 @@ api.setApp( app, client );
 // =======================
 // Start Server
 // =======================
+<<<<<<< HEAD
 app.listen(5000, "0.0.0.0", () => {
+=======
+app.listen(5000,() => {
+>>>>>>> f537c16bb8573f75b4ff89e1b79e9ad17a92c114
   console.log("Server running on port 5000");
 });
