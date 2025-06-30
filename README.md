@@ -28,3 +28,4 @@ npm install react-router-dom
 npm i --save-dev @types/node
 npm install dotenv
 npm install mongodb
+npm i --save-dev @types/react
