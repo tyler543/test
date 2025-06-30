@@ -18,13 +18,13 @@ Pocket Professors is a full-stack web application that allows users to gamble fo
 - Deployment: Nginx (Linux), GitHub
 
 ## Install these packages
-- npm install
-- npm install express --save
-- npm install body-parser
-- npm install mongodb
-- npm install cors
-- npm install react-router-dom
-- npm i --save-dev @types/node
-- npm install dotenv
-
-- npm install mongodb
+npm install
+npm install nodemon
+npm install express --save
+npm install body-parser
+npm install mongodb
+npm install cors
+npm install react-router-dom
+npm i --save-dev @types/node
+npm install dotenv
+npm install mongodb
