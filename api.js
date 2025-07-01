@@ -27,7 +27,7 @@ var error = '';
 try
 {
 const db = client.db('COP4331Cards');
-const result = db.collection('Cards').insertOne(newCard);
+await db.collection('Cards').insertOne(newCard);
 }
 catch(e)
 {
