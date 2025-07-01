@@ -87,7 +87,7 @@ return;
             <span id="loginResult">Output: {message}</span>
             <br/>
             <br/>
-            <h6>Don't have an account?</h6>
+            <h5>Don't have an account?</h5>
             <button type="button" id="Register" className="buttons"
                 onClick={goToRegisterPage}> Register </button>
         </div>
