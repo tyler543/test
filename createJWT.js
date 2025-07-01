@@ -1,61 +1,35 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-exports.createToken = function ( fn, ln, id )
-{
-return _createToken( fn, ln, id );
-}
-_createToken = function ( fn, ln, id )
-{
-try
-{
-const expiration = new Date();
-const user = {userId:id,firstName:fn,lastName:ln};
-const accessToken = jwt.sign( user, process.env.ACCESS_TOKEN_SECRET);
-// In order to exoire with a value other than the default, use the
-// following
-/*
-const accessToken= jwt.sign(user,process.env.ACCESS_TOKEN_SECRET,
-{ expiresIn: '30m'} );
-'24h'
-'365d'
-*/
-var ret = {accessToken:accessToken};
-}
-catch(e)
-{
-var ret = {error:e.message};
-}
-return ret;
-}
-exports.isExpired = function( token )
-{
-var isError = jwt.verify( token, process.env.ACCESS_TOKEN_SECRET,
-(err, verifiedJwt) =>
-{
-if( err )
-{
-return true;
-}
-else
-{
-return false;
-}
-});
-return isError;
-}
-exports.refresh = function( token )
-{
-var ud = jwt.decode(token,{complete:true});
-var userId = ud.payload.id;
-var firstName = ud.payload.firstName;
-var lastName = ud.payload.lastName;
-return _createToken( firstName, lastName, userId );
-}
-exports.refresh = function( token )
-{
-var ud = jwt.decode(token,{complete:true});
-var userId = ud.payload.id;
-var firstName = ud.payload.firstName;
-var lastName = ud.payload.lastName;
-return _createToken( firstName, lastName, userId );
-}
+
+const secret = process.env.ACCESS_TOKEN_SECRET || 'fallback-secret';
+
+exports.createToken = function (firstName, lastName, id) {
+  try {
+    const user = { userId: id, firstName, lastName };
+    const accessToken = jwt.sign(user, secret, { expiresIn: '1h' });
+    return accessToken; // ✅ return token string directly
+  } catch (e) {
+    return null; // or throw the error if preferred
+  }
+};
+
+exports.isExpired = function (token) {
+  try {
+    jwt.verify(token, secret);
+    return false;
+  } catch (err) {
+    return true;
+  }
+};
+
+exports.refresh = function (token) {
+  try {
+    const decoded = jwt.decode(token);
+    if (!decoded) return null;
+
+    const { userId, firstName, lastName } = decoded;
+    return exports.createToken(firstName, lastName, userId);
+  } catch (e) {
+    return null;
+  }
+};
