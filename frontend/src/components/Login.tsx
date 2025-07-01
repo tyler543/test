@@ -83,6 +83,10 @@ return;
                 onClick={doLogin}
             />
             <span id="loginResult">Output: {message}</span>
+            <br/>
+            <br/>
+            <h6>Don't have an account?</h6>
+            <a href="/register">Register Here</a>
         </div>
     );
 };

@@ -94,6 +94,9 @@ alert(error.toString());
 setResults(error.toString());
 }
 };
+/*function handleNewButtonClick(): void{
+    window.location.href = '/test';
+}*/
     return(
         <div id="cardUIDiv">
             <br />
@@ -116,6 +119,8 @@ setResults(error.toString());
             <button type="button" id="addCardButton" className="buttons"
                 onClick={addCard}> Add Card </button><br />
             <span id="cardAddResult">{message}</span>
+            {/*<button type="button" id="newButton" className="buttons"
+                onClick={handleNewButtonClick}> New Button </button>*/}
         </div>
     );
 }
