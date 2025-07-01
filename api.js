@@ -11,7 +11,7 @@ app.post("/api/addcard", async (req, res, next) => {
   const newCard = { Card: card, UserId: userId };
   var error = "";
   try {
-    const db = client.db("COP4331Cards"); // change to your database name (pockProf)
+    const db = client.db("pockProf"); // change to your database name (pockProf)
     // change to your collection name (unnamed for now | will be Cards most likely)
     const result = db.collection("Cards").insertOne(newCard);
   } catch (e) {
@@ -117,7 +117,7 @@ app.post("/api/searchcards", async (req, res, next) => {
   var error = "";
   const { userId, search } = req.body;
   var _search = search.trim();
-  const db = client.db("COP4331Cards"); //change database name here (pockProf)
+  const db = client.db("pockProf"); //change database name here (pockProf)
   // change to your collection name
   const results = await db
     .collection("Cards")
