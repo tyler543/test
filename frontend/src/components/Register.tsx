@@ -1,5 +1,25 @@
 import React, { useState } from 'react';
+
+ const app_name = 'pocketprofessors.com';
+ function buildPath(route:string) : string
+{
+if (process.env.NODE_ENV != 'development')
+{
+return 'http://' + app_name + ':5000/' + route;
+}
+else
+{
+return 'http://localhost:5000/' + route;
+}
+
+}
+
 function Register(){
+	const [Username, setUsername] = useState('');
+	const [FirstName, setFirstName] = useState('');
+	const [LastName, setLastName] = useState('');
+	const [Password, setPassword] = useState('');
+
 function goToLoginPage(): void{
     window.location.href = '/';
 }
