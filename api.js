@@ -49,51 +49,35 @@ res.status(200).json(ret);
 // Login
 // Incoming: login, password
 // Outgoing: id, firstName, lastName, error
-app.post('/api/login', async (req, res, next) =>
-{
-// incoming: login, password
-// outgoing: id, firstName, lastName, error
-var error = '';
-const { login, password } = req.body;
-const db = client.db('pockProf');
-const results = await
-db.collection('Users').find({Login:login,Password:password}).toArray
-();
-var id = -1;
-var fn = '';
-var ln = '';
-var ret;
-if( results.length > 0 )
-{
-id = results[0].UserId;
-fn = results[0].FirstName;
-ln = results[0].LastName;
-try
-{
-const token = require("./createJWT.js");
-ret = token.createToken( fn, ln, id );
-}
-catch(e)
-{
-ret = {error:e.message};
-}
-}
-else
-{
-ret = {error:"Login/Password incorrect"};
-}
-res.status(200).json(ret);
-var refreshedToken = null;
-try
-{
-refreshedToken = token.refresh(jwtToken);
-}
-catch(e)
-{
-console.log(e.message);
-}
-var ret = { results:_ret, error: error, jwtToken: refreshedToken };
+app.post('/api/login', async (req, res) => {
+  const { login, password } = req.body;
+  const db = client.db('pockProf');
+  
+  try {
+    const results = await db.collection('Users').find({ Login: login, Password: password }).toArray();
+
+    if (results.length === 0) {
+      return res.status(401).json({ error: 'Login/Password incorrect' });
+    }
+
+    const { UserId: id, FirstName: firstName, LastName: lastName } = results[0];
+
+    const token = require('./createJWT.js');
+    const jwtToken = token.createToken(firstName, lastName, id);
+
+    return res.status(200).json({
+      id,
+      firstName,
+      lastName,
+      jwtToken,
+      error: ''
+    });
+
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
 });
+
 //Register API
 //Incoming: login, password, firstName, lastName
 //Outgoing id, firstName, lastName, error 
