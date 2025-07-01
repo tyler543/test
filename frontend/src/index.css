@@ -119,7 +119,7 @@ button:focus-visible {
 
 /* keyframes for fading in/out */
 @keyframes fade-cta {
-  from { opacity: 0.3; }
+  from { opacity: 0.1; }
   to   { opacity: 1;   }
 }
 
