@@ -58,7 +58,9 @@ alert(error.toString());
 return;
 }
 };
-    
+    function goToRegisterPage(): void{
+        window.location.href = '/register';
+    }
 
     return(
         <div id="loginDiv">
@@ -86,7 +88,8 @@ return;
             <br/>
             <br/>
             <h6>Don't have an account?</h6>
-            <a href="/register">Register Here</a>
+            <button type="button" id="Register" className="buttons"
+                onClick={goToRegisterPage}> Register </button>
         </div>
     );
 };
