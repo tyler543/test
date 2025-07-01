@@ -16,8 +16,8 @@ return 'http://localhost:5000/' + route;
 
 function Register(){
 	const [Username, setUsername] = useState('');
-	const [FirstName, setFirstName] = useState('');
-	const [LastName, setLastName] = useState('');
+	const [firstName, setFirstName] = useState('');
+	const [lastName, setLastName] = useState('');
 	const [Password, setPassword] = useState('');
 
 function handleSetUsername(e: any): void{
@@ -34,13 +34,13 @@ function handleSetPassword(e: any): void{
 }
 
 function goToLoginPage(): void{
-    window.location.href = '/';
+    window.location.href = '/login';
 }
 
 async function doRegister(event:any) : Promise<void>
 {
 	event.preventDefault();
-	var obj = {login:Username,first_name:FirstName,last_name:LastName,password:Password};
+	var obj = {login:Username,first_name:firstName,last_name:lastName,password:Password};
 	var js = JSON.stringify(obj);
 	try
 	{
@@ -57,7 +57,7 @@ async function doRegister(event:any) : Promise<void>
 			var user =
 			{firstName:res.first_name,lastName:res.last_name,id:res.id}
 			localStorage.setItem('user_data', JSON.stringify(user));
-			window.location.href = '/';
+			window.location.href = '/login';
 		}
 	}
 	catch(error:any)
@@ -77,7 +77,7 @@ return(
   			<input placeholder="Username" id="login" value={Username} onChange={((e) => setUsername(e.target.value))}></input>
 
             <label>First Name: </label>
-  			<input placeholder="First Name" type="text" id="first_name" value={FirstName} onChange={(e)=> setFirstName(e.target.value)}></input>
+  			<input placeholder="First Name" type="text" id="first_name" value={firstName} onChange={(e)=> setFirstName(e.target.value)}></input>
             
             <br/>
             
@@ -85,7 +85,7 @@ return(
   			<input placeholder="Password" type="text" id="password" value={Password} onChange={(e)=>setPassword(e.target.value)}></input>
 
             <label>Last Name: </label>
-  			<input placeholder="Last Name" type="text" id="last_name" value={LastName} onChange={(e)=>setLastName(e.target.value)}></input>
+  			<input placeholder="Last Name" type="text" id="last_name" value={lastName} onChange={(e)=>setLastName(e.target.value)}></input>
 		</div>
 		<button type="submit" id="registerButton" className="buttons">Register!</button>
 		</form>
