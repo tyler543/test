@@ -4,7 +4,7 @@ import { useState } from 'react';
   if (process.env.NODE_ENV === 'development') {
     return 'http://localhost:5000/' + route;
   } else {
-    return 'http://143.198.178.41:5000/' + route;
+    return 'http://143.198.178.41:5000' + route;
   }
 }
 
@@ -38,7 +38,7 @@ async function doRegister(event:any) : Promise<void>
 	var js = JSON.stringify(obj);
 	try
 	{
-		const response = await fetch(buildPath('/api/register'),
+		const response = await fetch(buildPath('api/register'),
 		{method:'POST',body:js,headers:{'Content-Type':
 		'application/json'}});
 		var res = JSON.parse(await response.text());
