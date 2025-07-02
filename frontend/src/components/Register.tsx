@@ -40,7 +40,7 @@ function goToLoginPage(): void{
 async function doRegister(event:any) : Promise<void>
 {
 	event.preventDefault();
-	var obj = {login:Username,first_name:firstName,last_name:lastName,password:Password};
+	var obj = {login:Username,firstName:firstName,lastName:lastName,password:Password};
 	var js = JSON.stringify(obj);
 	try
 	{
@@ -55,7 +55,7 @@ async function doRegister(event:any) : Promise<void>
 		else
 		{
 			var user =
-			{firstName:res.first_name,lastName:res.last_name,id:res.id}
+			{firstName:res.firstName,lastName:res.lastName,id:res.id}
 			localStorage.setItem('user_data', JSON.stringify(user));
 			window.location.href = '/login';
 		}
