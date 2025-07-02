@@ -39,22 +39,22 @@ jobs:
           SSH_KEY: ${{ secrets.SSH_KEY }}
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
         run: |
-          # Build frontend locally
+          
           cd frontend
           npm install
           npm run build
           cd ..
 
-          # Install sshpass if needed
+         
           sudo apt-get install -y sshpass
 
-          # Clean /var/www/html on server
+        
           sshpass -p "${SSH_KEY}" ssh -o StrictHostKeyChecking=no ${SSH_USERNAME}@${SSH_HOST} "rm -rf /var/www/html/*"
 
-          # Copy built frontend files to server
+         
           sshpass -p "${SSH_KEY}" scp -r -o StrictHostKeyChecking=no frontend/dist/* ${SSH_USERNAME}@${SSH_HOST}:/var/www/html/
 
-          # Run backend npm install and restart pm2
+          
           sshpass -p "${SSH_KEY}" ssh -o StrictHostKeyChecking=no ${SSH_USERNAME}@${SSH_HOST} << EOF
           npm install
           pm2 restart express-server
