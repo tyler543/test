@@ -9,10 +9,10 @@ import { useState } from 'react';
 }
 
 function Register(){
-	const [Username, setUsername] = useState('');
+	const [login, setLogin] = useState('');
 	const [firstName, setFirstName] = useState('');
 	const [lastName, setLastName] = useState('');
-	const [Password, setPassword] = useState('');
+	const [password, setPassword] = useState('');
 /*
 function handleSetUsername(e: any): void{
 	setUsername(e.target.value);
@@ -34,7 +34,7 @@ function goToLoginPage(): void{
 async function doRegister(event:any) : Promise<void>
 {
 	event.preventDefault();
-	var obj = {login:Username,firstName:firstName,lastName:lastName,password:Password};
+	var obj = {login:login,firstName:firstName,lastName:lastName,password:password};
 	var js = JSON.stringify(obj);
 	try
 	{
@@ -68,7 +68,7 @@ return(
 		<form onSubmit={doRegister}>
 		<div>
   			<label>Login: </label>
-  			<input placeholder="Username" id="login" value={Username} onChange={((e) => setUsername(e.target.value))}></input>
+  			<input placeholder="Username" id="login" value={login} onChange={((e) => setLogin(e.target.value))}></input>
 
             <label>First Name: </label>
   			<input placeholder="First Name" type="text" id="first_name" value={firstName} onChange={(e)=> setFirstName(e.target.value)}></input>
@@ -76,7 +76,7 @@ return(
             <br/>
             
             <label>Password: </label>
-  			<input placeholder="Password" type="text" id="password" value={Password} onChange={(e)=>setPassword(e.target.value)}></input>
+  			<input placeholder="Password" type="text" id="password" value={password} onChange={(e)=>setPassword(e.target.value)}></input>
 
             <label>Last Name: </label>
   			<input placeholder="Last Name" type="text" id="last_name" value={lastName} onChange={(e)=>setLastName(e.target.value)}></input>
