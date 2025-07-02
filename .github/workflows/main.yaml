@@ -31,7 +31,7 @@ jobs:
         uses: actions/checkout@v3
         
       - name: Build frontend
-        working-directory: fe
+        working-directory: frontend
         run: |
           npm install
           npm run build
