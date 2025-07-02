@@ -5,7 +5,7 @@ import { useState } from 'react';
 {
 if (process.env.NODE_ENV != 'development')
 {
-return 'http://' + app_name + route;
+return 'http://' + app_name + '/api/' + route;
 }
 else
 {
@@ -44,7 +44,7 @@ async function doRegister(event:any) : Promise<void>
 	var js = JSON.stringify(obj);
 	try
 	{
-		const response = await fetch(buildPath('api/register'),
+		const response = await fetch(buildPath('register'),
 		{method:'POST',body:js,headers:{'Content-Type':
 		'application/json'}});
 		var res = JSON.parse(await response.text());
