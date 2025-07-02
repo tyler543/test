@@ -1,17 +1,11 @@
 import { useState } from 'react';
 
- const app_name = '143.198.178.41';
- function buildPath(route:string) : string
-{
-if (process.env.NODE_ENV != 'development')
-{
-return 'http://' + app_name + '/api/' + route;
-}
-else
-{
-return 'http://localhost:5000/' + route;
-}
-
+ function buildPath(route: string): string {
+  if (process.env.NODE_ENV === 'development') {
+    return 'http://localhost:5000/' + route;
+  } else {
+    return 'http://143.198.178.41:5000/' + route;
+  }
 }
 
 function Register(){
