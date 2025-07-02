@@ -45,7 +45,7 @@ jobs:
           SSH_KEY: ${{ secrets.SSH_KEY }}
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
         run: |
-          sshpass -p "${SSH_KEY}" ssh -o StrictHostKeyChecking=no ${SSH_USERNAME}@${SSH_HOST} "rm -rf /var/www/html/*"
+          # sshpass -p "${SSH_KEY}" ssh -o StrictHostKeyChecking=no ${SSH_USERNAME}@${SSH_HOST} "rm -rf /var/www/html/*"
           sshpass -p "${SSH_KEY}" scp -r -o StrictHostKeyChecking=no frontend/dist/* ${SSH_USERNAME}@${SSH_HOST}:/var/www/html/
 
       - name:  to DigitalOcean Droplet
