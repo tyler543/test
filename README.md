@@ -1,7 +1,8 @@
 # Pocket Professors
 
 Pocket Professors is a full-stack web application that allows users to gamble for cards with (in-game) money.
-
+# IP of droplet
+- 143.198.178.41
 ##  Features
 
 - User authentication (login)
