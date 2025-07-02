@@ -4,7 +4,7 @@ import { useState } from 'react';
   if (process.env.NODE_ENV === 'development') {
     return 'http://localhost:5000/' + route;
   } else {
-    return 'http://143.198.178.41:5000' + route;
+    return 'http://143.198.178.41:5000/' + route;
   }
 }
 
