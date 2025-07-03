@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - mainpptesting
+  pull_request:
+    branches:
+      - mainpptesting
 
 jobs:
   build:
@@ -17,14 +20,8 @@ jobs:
         with:
           node-version: 20.16.0
 
-      - name: Install root dependencies
+      - name: Install dependencies
         run: npm install
-
-      - name: Build frontend
-        working-directory: frontend
-        run: |
-          npm install
-          npm run build
 
   deploy:
     needs: build
@@ -32,29 +29,40 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
+        
+      - name: Build frontend
+        working-directory: frontend
+        run: |
+          npm install
+          npm run build
+          
       - name: Install sshpass
         run: sudo apt-get install -y sshpass
+        
+      
 
-      - name: Deploy backend + restart
+      - name:  to DigitalOcean Droplet
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_KEY: ${{ secrets.SSH_KEY }}
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
         run: |
-          sshpass -p "${SSH_KEY}" ssh -o StrictHostKeyChecking=no ${SSH_USERNAME}@${SSH_HOST} << 'EOF'
+          sshpass -p "${SSH_KEY}" ssh -o StrictHostKeyChecking=no ${SSH_USERNAME}@${SSH_HOST} << EOF
           cd /var/cardsServer
           git pull origin mainpptesting
           npm install
-          pm2 delete express-server || true
-          pm2 start server.js --name express-server
+          pm2 restart express-server
           EOF
-
-      - name: Deploy frontend build to server
+          
+      - name:  dist folder to server
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_KEY: ${{ secrets.SSH_KEY }}
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
         run: |
+          sshpass -p "${SSH_KEY}" ssh -o StrictHostKeyChecking=no ${SSH_USERNAME}@${SSH_HOST} cd /var/www/html
+          sshpass -p "${SSH_KEY}" ssh -o StrictHostKeyChecking=no ${SSH_USERNAME}@${SSH_HOST} git pull origin mainpptesting
+          sshpass -p "${SSH_KEY}" ssh -o StrictHostKeyChecking=no ${SSH_USERNAME}@${SSH_HOST} npm install
           sshpass -p "${SSH_KEY}" ssh -o StrictHostKeyChecking=no ${SSH_USERNAME}@${SSH_HOST} "rm -rf /var/www/html/*"
           sshpass -p "${SSH_KEY}" scp -r -o StrictHostKeyChecking=no frontend/dist/* ${SSH_USERNAME}@${SSH_HOST}:/var/www/html/
+          
