@@ -51,6 +51,7 @@ jobs:
           cd /var/cardsServer
           git pull origin mainpptesting
           npm install
+          npm run build
           pm2 restart express-server
           EOF
           
@@ -61,9 +62,7 @@ jobs:
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
         run: |
           sshpass -p "${SSH_KEY}" ssh -o StrictHostKeyChecking=no ${SSH_USERNAME}@${SSH_HOST} << EOF 
-          cd /var/www/html
-          npm install
-          "rm -rf /var/www/html/*"
+          rm -rf /var/www/html/*
           EOF
           sshpass -p "${SSH_KEY}" scp -r -o StrictHostKeyChecking=no frontend/dist/* ${SSH_USERNAME}@${SSH_HOST}:/var/www/html/
           
