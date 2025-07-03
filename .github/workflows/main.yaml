@@ -3,7 +3,7 @@ name: Full CI/CD Pipeline
 on:
   push:
     branches:
-      - main  # or mainpptesting if you're still using that
+      - mainpptesting  # or mainpptesting if you're still using that
 
 jobs:
   build:
@@ -34,7 +34,7 @@ jobs:
         run: |
           sshpass -p "${SSH_KEY}" ssh -o StrictHostKeyChecking=no ${SSH_USERNAME}@${SSH_HOST} << EOF
             cd /var/cardsServer
-            git pull origin main  # make sure your server repo is tracking this branch
+            git pull origin mainpptesting  # make sure your server repo is tracking this branch
             npm install
             pm2 restart express-server || node server.js &
           EOF
