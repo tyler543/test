@@ -3,10 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main
-  pull_request:
-    branches:
-      - main
+      - mainpptesting
 
 jobs:
   build:
@@ -20,8 +17,14 @@ jobs:
         with:
           node-version: 20.16.0
 
-      - name: Install dependencies
+      - name: Install root dependencies
         run: npm install
+
+      - name: Build frontend
+        working-directory: frontend
+        run: |
+          npm install
+          npm run build
 
   deploy:
     needs: build
@@ -33,16 +36,25 @@ jobs:
       - name: Install sshpass
         run: sudo apt-get install -y sshpass
 
-      - name: Deploy to DigitalOcean Droplet
+      - name: Deploy backend + restart
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_KEY: ${{ secrets.SSH_KEY }}
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
         run: |
-          sshpass -p "${SSH_KEY}" ssh -o StrictHostKeyChecking=no ${SSH_USERNAME}@${SSH_HOST} << EOF
-          cd /var/www/html
-          git pull origin main
+          sshpass -p "${SSH_KEY}" ssh -o StrictHostKeyChecking=no ${SSH_USERNAME}@${SSH_HOST} << 'EOF'
+          cd /var/cardsServer
+          git pull origin mainpptesting
           npm install
-          npm run build
-          pm2 restart express-server
+          pm2 delete express-server || true
+          pm2 start server.js --name express-server
           EOF
+
+      - name: Deploy frontend build to server
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+        run: |
+          sshpass -p "${SSH_KEY}" ssh -o StrictHostKeyChecking=no ${SSH_USERNAME}@${SSH_HOST} "rm -rf /var/www/html/*"
+          sshpass -p "${SSH_KEY}" scp -r -o StrictHostKeyChecking=no frontend/dist/* ${SSH_USERNAME}@${SSH_HOST}:/var/www/html/
