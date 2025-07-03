@@ -1,18 +1,15 @@
-name: CI/CD Pipeline
+name: Full CI/CD Pipeline
 
 on:
   push:
     branches:
-      - mainpptesting
-  pull_request:
-    branches:
-      - mainpptesting
+      - main  # or mainpptesting if you're still using that
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v3
 
       - name: Set up Node.js
@@ -20,49 +17,36 @@ jobs:
         with:
           node-version: 20.16.0
 
-      - name: Install dependencies
-        run: npm install
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        
-      - name: Build frontend
+      - name: Build Frontend
         working-directory: frontend
         run: |
           npm install
           npm run build
-          
+
       - name: Install sshpass
         run: sudo apt-get install -y sshpass
-        
-      
 
-      - name:  to DigitalOcean Droplet
+      - name: Deploy Backend and Restart Server
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_KEY: ${{ secrets.SSH_KEY }}
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
         run: |
           sshpass -p "${SSH_KEY}" ssh -o StrictHostKeyChecking=no ${SSH_USERNAME}@${SSH_HOST} << EOF
-          cd /var/cardsServer
-          git pull origin mainpptesting
-          npm install
-          npm run build
-          pm2 restart express-server
+            cd /var/cardsServer
+            git pull origin main  # make sure your server repo is tracking this branch
+            npm install
+            pm2 restart express-server || node server.js &
           EOF
-          
-      - name:  dist folder to server
+
+      - name: Deploy Frontend to Nginx
         env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_KEY: ${{ secrets.SSH_KEY }}
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
         run: |
-          sshpass -p "${SSH_KEY}" ssh -o StrictHostKeyChecking=no ${SSH_USERNAME}@${SSH_HOST} << EOF 
-          rm -rf /var/www/html/*
+          sshpass -p "${SSH_KEY}" ssh -o StrictHostKeyChecking=no ${SSH_USERNAME}@${SSH_HOST} << EOF
+            rm -rf /var/www/html/*
           EOF
+
           sshpass -p "${SSH_KEY}" scp -r -o StrictHostKeyChecking=no frontend/dist/* ${SSH_USERNAME}@${SSH_HOST}:/var/www/html/
-          
