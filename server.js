@@ -1,4 +1,5 @@
 require("dotenv").config();
+require('./routes/register');
 // =======================
 // Imports and Middleware
 // =======================
