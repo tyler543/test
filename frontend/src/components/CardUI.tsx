@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-const app_name = 'pocketprofessors.com'; // change to your app name
+const app_name = '143.198.178.41'; // change to your app name
 function buildPath(route:string) : string
 {
 if (process.env.NODE_ENV != 'development')
@@ -80,6 +80,9 @@ alert(error.toString());
 setResults(error.toString());
 }
 };
+/*function handleNewButtonClick(): void{
+    window.location.href = '/test';
+}*/
     return(
         <div id="cardUIDiv">
             <br />
@@ -102,6 +105,8 @@ setResults(error.toString());
             <button type="button" id="addCardButton" className="buttons"
                 onClick={addCard}> Add Card </button><br />
             <span id="cardAddResult">{message}</span>
+            {/*<button type="button" id="newButton" className="buttons"
+                onClick={handleNewButtonClick}> New Button </button>*/}
         </div>
     );
 }
