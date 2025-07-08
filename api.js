@@ -1,133 +1,65 @@
-require('express');
-require('mongodb');
-// Add Card
-// Incoming: userId, card
-// Outgoing: error
-exports.setApp = function( app, client){
-app.post("/api/addcard", async (req, res, next) => {
-  // incoming: userId, color
-  // outgoing: error
-  const { userId, card } = req.body;
-  const newCard = { Card: card, UserId: userId };
-  var error = "";
-  try {
-    const db = client.db("pockProf"); // change to your database name (pockProf)
-    // change to your collection name (unnamed for now | will be Cards most likely)
-    const result = db.collection("Cards").insertOne(newCard);
-  } catch (e) {
-    error = e.toString();
-  }
-  cardList.push(card);
-  var ret = { error: error };
-  res.status(200).json(ret);
-});
+const token = require("./createJWT.js");
 
-// Login
-// Incoming: login, password
-// Outgoing: id, firstName, lastName, error
-app.post("/api/login", async (req, res) => {
-  const { login, password } = req.body;
-
-  try {
-    const db = client.db("pockProf"); // database name here | this is good
-    // this is fine
-    const results = await db
-      .collection("Users")
-      .find({ Login: login, Password: password })
-      .toArray();
-
-    let id = -1;
-    let fn = "";
-    let ln = "";
-    let error = "";
+exports.setApp = function (app, client) {
+  app.post("/api/login", async (req, res) => {
+    const { login, password } = req.body;
+    const db = client.db("pockProf");
+    const results = await db.collection("Users").find({ Login: login, Password: password }).toArray();
 
     if (results.length > 0) {
-      // if no custom UserID, use _id instead
-      id = results[0].UserID || results[0]._id;
-      fn = results[0].FirstName;
-      ln = results[0].LastName;
+      const { UserId, FirstName, LastName } = results[0];
+      try {
+        const jwt = token.createToken(FirstName, LastName, UserId);
+        res.status(200).json(jwt);
+      } catch (e) {
+        res.status(200).json({ error: e.message });
+      }
     } else {
-      error = "Invalid username or password";
+      res.status(200).json({ error: "Login/Password incorrect" });
+    }
+  });
+
+  app.post("/api/addcard", async (req, res) => {
+    const { userId, card, jwtToken } = req.body;
+    try {
+      if (token.isExpired(jwtToken)) return res.status(200).json({ error: "The JWT is no longer valid", jwtToken: "" });
+    } catch (e) {
+      console.log(e.message);
     }
 
-    const ret = { id, firstName: fn, lastName: ln, error };
-    res.status(200).json(ret);
-  } catch (err) {
-    console.error("Login error:", err.message);
-    res
-      .status(500)
-      .json({ id: -1, firstName: "", lastName: "", error: "Server error" });
-  }
-});
-
-//Register API
-//Incoming: login, password, firstName, lastName
-//Outgoing id, firstName, lastName, error 
-app.post("/api/register", async(req, res) => {
-  const{ login ,password, firstName, lastName} = req.body;
-
-  try{
     const db = client.db("pockProf");
-
-    const existingUser = await db
-      .collection("Users")
-      .findOne({Login: login});
-
-    let id = -1;
-    let fn = "";
-    let ln = "";
     let error = "";
-
-    if(existingUser) {
-      error = "Username is already taken";
-    } else {
-      // Insert the new user
-      const newUser = {
-        Login: login,
-        Password: password,
-        FirstName: firstName,
-        LastName: lastName,
-      };
-
-      const result = await db.collection("Users").insertOne(newUser);
-
-      id = result.insertedId.toString();
-      fn = firstName;
-      ln = lastName;
+    try {
+      await db.collection("Cards").insertOne({ Card: card, UserId: userId });
+    } catch (e) {
+      error = e.toString();
     }
-    
-    const ret = { id, firstName: fn, lastName: ln, error };
-    res.status(200).json(ret);
-  } catch (err) {
-    console.error("Registration error:", err.message);
-    res
-      .status(500)
-      .json({ id: -1, firstName: "", lastName: "", error: "Server error" });
 
-  }
-  console.log("BODY:", req.body);
-});
+    let refreshedToken = token.refresh(jwtToken);
+    res.status(200).json({ error, jwtToken: refreshedToken });
+  });
 
-// Search Cards
-// Incoming: userId, search
-// Outgoing: results[], error
-app.post("/api/searchcards", async (req, res, next) => {
-  // incoming: userId, search
-  // outgoing: results[], error
-  var error = "";
-  const { userId, search } = req.body;
-  var _search = search.trim();
-  const db = client.db("pockProf"); //change database name here (pockProf)
-  // change to your collection name
-  const results = await db
-    .collection("Cards")
-    .find({ Card: { $regex: _search + ".*", $options: "i" } })
-    .toArray();
-  var _ret = [];
-  for (var i = 0; i < results.length; i++) {
-    _ret.push(results[i].Card);
-  }
-  var ret = { results: _ret, error: error };
-  res.status(200).json(ret);
-});
-}
+  app.post("/api/searchcards", async (req, res) => {
+    const { userId, search, jwtToken } = req.body;
+    try {
+      if (token.isExpired(jwtToken)) return res.status(200).json({ error: "The JWT is no longer valid", jwtToken: "" });
+    } catch (e) {
+      console.log(e.message);
+    }
+
+    let resultsList = [];
+    let error = "";
+    try {
+      const db = client.db("pockProf");
+      const results = await db.collection("Cards").find({
+        Card: { $regex: search.trim() + ".*", $options: "i" }
+      }).toArray();
+      resultsList = results.map(r => r.Card);
+    } catch (e) {
+      error = e.toString();
+    }
+
+    let refreshedToken = token.refresh(jwtToken);
+    res.status(200).json({ results: resultsList, error, jwtToken: refreshedToken });
+  });
+};

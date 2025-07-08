@@ -1,6 +1,9 @@
 # Pocket Professors
 
 Pocket Professors is a full-stack web application that allows users to gamble for cards with (in-game) money.
+## IP of test droplet
+
+- 143.198.178.41
 
 ##  Features
 
@@ -30,3 +33,4 @@ npm install dotenv
 npm install mongodb
 npm i --save-dev @types/react
 npm install vite
+npm install jsonwebtoken
