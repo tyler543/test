@@ -1,35 +1,26 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-const secret = process.env.ACCESS_TOKEN_SECRET || 'fallback-secret';
-
-exports.createToken = function (firstName, lastName, id) {
+exports.createToken = function (fn, ln, id) {
   try {
-    const user = { userId: id, firstName, lastName };
-    const accessToken = jwt.sign(user, secret, { expiresIn: '1h' });
-    return accessToken; // ✅ return token string directly
+    const user = { userId: id, firstName: fn, lastName: ln };
+    const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
+    return { accessToken };
   } catch (e) {
-    return null; // or throw the error if preferred
+    return { error: e.message };
   }
 };
 
-exports.isExpired = function (token) {
+exports.isExpired = function (tokenStr) {
   try {
-    jwt.verify(token, secret);
+    jwt.verify(tokenStr, process.env.ACCESS_TOKEN_SECRET);
     return false;
-  } catch (err) {
+  } catch (e) {
     return true;
   }
 };
 
-exports.refresh = function (token) {
-  try {
-    const decoded = jwt.decode(token);
-    if (!decoded) return null;
-
-    const { userId, firstName, lastName } = decoded;
-    return exports.createToken(firstName, lastName, userId);
-  } catch (e) {
-    return null;
-  }
+exports.refresh = function (tokenStr) {
+  const decoded = jwt.decode(tokenStr);
+  return exports.createToken(decoded.firstName, decoded.lastName, decoded.userId);
 };

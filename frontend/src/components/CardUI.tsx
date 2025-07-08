@@ -1,16 +1,6 @@
 import React, { useState } from 'react';
-const app_name = '143.198.178.41'; // change to your app name
-function buildPath(route:string) : string
-{
-if (process.env.NODE_ENV != 'development')
-{
-return 'http://' + app_name + ':5000/' + route;
-}
-else
-{
-return 'http://localhost:5000/' + route;
-}
-}
+import { buildPath } from './Path';
+import { retrieveToken, storeToken } from '../tokenStorage';
 function CardUI()
 {
 const [message,setMessage] = useState('');
@@ -80,34 +70,29 @@ alert(error.toString());
 setResults(error.toString());
 }
 };
-/*function handleNewButtonClick(): void{
-    window.location.href = '/test';
-}*/
-    return(
-        <div id="cardUIDiv">
-            <br />
-            Search: <input
-                type="text"
-                id="searchText"
-                placeholder="Card To Search For"
-                onChange={handleSearchTextChange}
-            />
-            <button type="button" id="searchCardButton" className="buttons"
-                onClick={searchCard}> Search Card</button><br />
-            <span id="cardSearchResult">{searchResults}</span>
-            <p id="cardList">{cardList}</p><br /><br />
-            Add: <input
-                type="text"
-                id="cardText"
-                placeholder="Card To Add"
-                onChange={handleCardTextChange}
-            />
-            <button type="button" id="addCardButton" className="buttons"
-                onClick={addCard}> Add Card </button><br />
-            <span id="cardAddResult">{message}</span>
-            {/*<button type="button" id="newButton" className="buttons"
-                onClick={handleNewButtonClick}> New Button </button>*/}
-        </div>
-    );
+function handleSearchTextChange( e: any ) : void
+{
+setSearchValue( e.target.value );
+}
+function handleCardTextChange( e: any ) : void
+{
+setCardNameValue( e.target.value );
+}
+return(
+<div id="cardUIDiv">
+<br />
+Search: <input type="text" id="searchText" placeholder="Card To Search For"
+onChange={handleSearchTextChange} />
+<button type="button" id="searchCardButton" className="buttons"
+onClick={searchCard}> Search Card</button><br />
+<span id="cardSearchResult">{searchResults}</span>
+<p id="cardList">{cardList}</p><br /><br />
+Add: <input type="text" id="cardText" placeholder="Card To Add"
+onChange={handleCardTextChange} />
+<button type="button" id="addCardButton" className="buttons"
+onClick={addCard}> Add Card </button><br />
+<span id="cardAddResult">{message}</span>
+</div>
+);
 }
 export default CardUI;

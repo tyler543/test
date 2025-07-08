@@ -1,4 +1,4 @@
-const app_name = 'pocketprofessors.com'
+const app_name = '143.198.178.41';
 export function buildPath(route:string) : string
 {
 if (process.env.NODE_ENV != 'development')
