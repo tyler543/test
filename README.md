@@ -34,3 +34,5 @@ npm install mongodb
 npm i --save-dev @types/react
 npm install vite
 npm install jsonwebtoken
+npm install react-jwt
+npm install jwt-decode
