@@ -4,8 +4,7 @@ require('mongodb');
 // Incoming: userId, card
 // Outgoing: error
 exports.setApp = function( app, client){
-app.post('/api/addcard', async (req, res, next) =>
-{
+app.post('/api/addcard', async (req, res, next) =>{
 // incoming: userId, color
 // outgoing: error
 const { userId, card, jwtToken } = req.body;
@@ -44,6 +43,62 @@ console.log(e.message);
 }
 var ret = { error: error, jwtToken: refreshedToken };
 res.status(200).json(ret);
+});
+
+//Open Pack
+//Incoming:userId,jwt,packName
+//Outgoing: jtw,added cards, error
+app.post('/api/openPack',async(req, res) => {
+const { userId, jwtToken, packName } = req.body;
+  try {
+    if (token.isExpired(jwtToken)) {
+      return res.status(200).json({ error: 'JWT expired', jwtToken: '' });
+    }
+  } catch (e) {
+    return res.status(500).json({ error: 'JWT validation failed', jwtToken: '' });
+  }
+
+  const userDb = client.db("COP4331Cards");
+  const packDb = client.db(packName);
+
+  let error = '';
+  let cardsInPack = [];
+
+  //Find all cards in the pack and set them into an array
+  const cards = await packDb.collection('Cards').find({}).toArray();
+
+  //Set weight based of card rarity, this can and should be changed
+  const rarityWeights = {
+      1: 50,
+      2: 25,
+      3: 15,
+      4: 8,
+      5: 2
+    };
+
+    //For how rare each card is, add it that many times to the drawing pool, thus using the weights.
+  allCards.forEach(card => {
+  const weight = rarityWeights[card.Rarity] || 1;
+  for (let i = 0; i < weight; i++) {
+    weightedPool.push(card);
+  }
+  });
+  //Select the cards at random
+  const selected = new Set();
+    while (newCards.length < packSize && weightedPool.length > 0) {
+      const randIndex = Math.floor(Math.random() * weightedPool.length);
+      const selectedCard = weightedPool[randIndex];
+
+      if (!selected.has(selectedCard.Card)) {
+        newCards.push(selectedCard);
+        selected.add(selectedCard.Card);
+      }
+    }
+    //Add them to user database
+
+    //Return Cards added along with updated jwt(frontend can use cards added/drew to have animation)
+
+
 });
 
 // Login
